@@ -46,7 +46,7 @@ func (c *commands) getCommandFromConfig(commandConfig string) error {
 		return err
 	}
 
-	// Теперь commands содержит команды из файла commands.conf
+	// Теперь commands содержит команды из файла commands.csv
 	return nil
 
 }
