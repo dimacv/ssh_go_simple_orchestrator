@@ -1,0 +1,17 @@
+// Импорт пакета term
+import (
+    "golang.org/x/term"
+)
+
+// Использование term для ввода парольной фразы
+ssh.RetryableAuthMethod(ssh.KeyboardInteractive(func(user, instruction string, questions []string, echos []bool) (answers []string, err error) {
+    fmt.Printf("Enter passphrase for %s: ", host.KeyPath)
+    
+    // Использование term для скрытого ввода парольной фразы
+    passphrase, err := term.ReadPassword(int(syscall.Stdin))
+    if err != nil {
+        return nil, fmt.Errorf("unable to read passphrase: %v", err)
+    }
+    
+    return []string{string(passphrase)}, nil
+}))
