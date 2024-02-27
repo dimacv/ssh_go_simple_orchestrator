@@ -1,1 +1,1 @@
-# ssh_go_simple_orchestrator
+# ssh go simple orchestrator
