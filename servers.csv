@@ -1,7 +1,10 @@
-host1;root;./key_OpenSSH-format-1.ppk;22
-host2;root;./key_OpenSSH-format-2.ppk;
-host3;root;./key_OpenSSH-format-3.ppk
-host4;root;
-host5;root
+host1;user1;./key_OpenSSH-format-1.ppk;22
+host2;user2;./key_OpenSSH-format-2.ppk;
+host3;user3;./key_OpenSSH-format-3.ppk
+host4;user4;
+host5;user5
 host6;
 host7
+host8;root;./key_OpenSSH-format-8.ppk
+host9
+host10
