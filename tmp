@@ -1,17 +1,38 @@
-// Импорт пакета term
+// Импорт необходимых пакетов
 import (
-    "golang.org/x/term"
+    "golang.org/x/crypto/ssh"
+    "golang.org/x/crypto/ssh/terminal"
+    "syscall"
+    "fmt"
 )
 
-// Использование term для ввода парольной фразы
-ssh.RetryableAuthMethod(ssh.KeyboardInteractive(func(user, instruction string, questions []string, echos []bool) (answers []string, err error) {
-    fmt.Printf("Enter passphrase for %s: ", host.KeyPath)
-    
-    // Использование term для скрытого ввода парольной фразы
-    passphrase, err := term.ReadPassword(int(syscall.Stdin))
-    if err != nil {
-        return nil, fmt.Errorf("unable to read passphrase: %v", err)
-    }
-    
-    return []string{string(passphrase)}, nil
-}))
+// Создание конфигурации SSH
+conf := &ssh.ClientConfig{
+    User: host.Username,
+    Auth: []ssh.AuthMethod{
+        // Использование callback функции для ввода парольной фразы
+        ssh.PasswordCallback(func() (string, error) {
+            fmt.Printf("Enter passphrase for %s: ", host.KeyPath)
+            bytePassword, err := terminal.ReadPassword(int(syscall.Stdin))
+            if err != nil {
+                return "", fmt.Errorf("unable to read passphrase: %v", err)
+            }
+            return string(bytePassword), nil
+        }),
+        // Добавление метода аутентификации по ключу
+        ssh.PublicKeysCallback(func() ([]ssh.Signer, error) {
+            key, err := ioutil.ReadFile(host.KeyPath)
+            if err != nil {
+                return nil, err
+            }
+            signer, err := ssh.ParsePrivateKey(key)
+            if err != nil {
+                return nil, err
+            }
+            return []ssh.Signer{signer}, nil
+        }),
+    },
+    // Указание callback функции для проверки "host key"
+    HostKeyCallback: ssh.InsecureIgnoreHostKey(), // Не используйте в боевой среде!
+}
+
